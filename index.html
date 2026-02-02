@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مهمة إنقاذ الزمن - لعبة تحويل وحدات الزمن</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --accent: #FEC601;
+            --success: #00D9A5;
+            --error: #FF4757;
+            --dark: #2C3E50;
+            --light: #ECF0F1;
+            --purple: #9B59B6;
+            --blue: #3498DB;
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-card: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* خلفية متحركة - نجوم */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* معلومات الديوان */
+        .institution-header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            border: 3px solid var(--accent);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .institution-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .text-container {
+            text-align: center;
+        }
+
+        .institution-name {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .institution-level {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* الشاشة الافتتاحية */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .intro-screen.hidden {
+            animation: fadeOut 0.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .time-machine-logo {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .clock-circle {
+            width: 100%;
+            height: 100%;
+            border: 8px solid var(--accent);
+            border-radius: 50%;
+            position: relative;
+            background: radial-gradient(circle, rgba(255,107,53,0.2), transparent);
+            box-shadow: 0 0 50px rgba(255,107,53,0.5), inset 0 0 30px rgba(255,107,53,0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .clock-hand {
+            position: absolute;
+            background: var(--accent);
+            transform-origin: bottom center;
+            left: 50%;
+            bottom: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .hour-hand {
+            width: 6px;
+            height: 60px;
+            margin-left: -3px;
+            animation: rotateHour 4s linear infinite;
+        }
+
+        .minute-hand {
+            width: 4px;
+            height: 80px;
+            margin-left: -2px;
+            animation: rotateMinute 2s linear infinite;
+        }
+
+        @keyframes rotateHour {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateMinute {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(255,107,53,0.5), inset 0 0 30px rgba(255,107,53,0.3); }
+            50% { box-shadow: 0 0 80px rgba(255,107,53,0.8), inset 0 0 50px rgba(255,107,53,0.5); }
+        }
+
+        .intro-title {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent), var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .intro-subtitle {
+            font-size: 1.3rem;
+            color: var(--light);
+            margin-bottom: 40px;
+            text-align: center;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .start-button {
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,107,53,0.4);
+            transition: all 0.3s ease;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .start-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255,107,53,0.6);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* الرأس */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .game-title {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(254,198,1,0.5), 0 4px 8px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .game-subtitle {
+            font-size: 1.2rem;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        /* شريط التقدم وآلة الزمن */
+        .progress-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .machine-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .machine-icon {
+            font-size: 4rem;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-info h2 {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--accent));
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px var(--success);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.2);
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Baloo Bhaijaan 2', cursive;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* اختيار المستوى */
+        .level-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+            animation: slideIn 1s ease-out;
+        }
+
+        .level-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .level-card:hover::before {
+            transform: scale(1);
+        }
+
+        .level-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .level-card.easy {
+            background: linear-gradient(135deg, rgba(0,217,165,0.2), rgba(0,217,165,0.1));
+        }
+
+        .level-card.medium {
+            background: linear-gradient(135deg, rgba(247,147,30,0.2), rgba(247,147,30,0.1));
+        }
+
+        .level-card.hard {
+            background: linear-gradient(135deg, rgba(255,71,87,0.2), rgba(255,71,87,0.1));
+        }
+
+        .level-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .level-title {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .level-description {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* منطقة اللعب */
+        .game-area {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 2px solid rgba(255,255,255,0.2);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .challenge-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .challenge-number {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .challenge-text {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.8;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(254,198,1,0.5);
+        }
+
+        .answer-section {
+            margin: 40px 0;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .answer-input {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            padding: 20px 30px;
+            border: 3px solid var(--accent);
+            border-radius: 15px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            text-align: center;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--success);
+            box-shadow: 0 0 20px rgba(0,217,165,0.5);
+            transform: scale(1.05);
+        }
+
+        .unit-label {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--success), #00b894);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,217,165,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,217,165,0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--blue), #2980b9);
+            color: white;
+            box-shadow: 0 10px 30px rgba(52,152,219,0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(52,152,219,0.6);
+        }
+
+        .btn-skip {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+
+        .btn-skip:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* التغذية الراجعة */
+        .feedback {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .feedback.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .feedback.success {
+            background: linear-gradient(135deg, rgba(0,217,165,0.3), rgba(0,217,165,0.2));
+            border: 3px solid var(--success);
+            color: var(--success);
+        }
+
+        .feedback.error {
+            background: linear-gradient(135deg, rgba(255,71,87,0.3), rgba(255,71,87,0.2));
+            border: 3px solid var(--error);
+            color: var(--error);
+        }
+
+        .feedback-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .hint {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: var(--light);
+        }
+
+        /* شاشة النهاية */
+        .completion-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .celebration-icon {
+            font-size: 8rem;
+            animation: celebrate 1s ease-in-out infinite;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: rotate(-10deg) scale(1); }
+            50% { transform: rotate(10deg) scale(1.2); }
+        }
+
+        .completion-title {
+            font-family: 'Baloo Bhaijaan 2', cursive;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(254,198,1,0.5);
+        }
+
+        .completion-message {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .final-stats {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .final-stat {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            min-width: 180px;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .final-stat-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: 'Baloo Bhaijaan 2', cursive;
+        }
+
+        .final-stat-label {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* الشارات */
+        .badges {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 2px solid var(--accent);
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: badgeAppear 0.5s ease-out;
+        }
+
+        @keyframes badgeAppear {
+            from { transform: scale(0) rotate(-180deg); opacity: 0; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .badge-icon {
+            font-size: 1.5rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* مؤشر التحميل */
+        .loading-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            padding: 30px 50px;
+            border-radius: 20px;
+            z-index: 2000;
+            display: none;
+        }
+
+        .loading-indicator.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* تأثيرات إضافية */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            animation: particleFloat 3s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-200px) scale(0); opacity: 0; }
+        }
+
+        /* استجابة للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .institution-name {
+                font-size: 1.4rem;
+            }
+
+            .institution-level {
+                font-size: 1rem;
+            }
+
+            .institution-header {
+                padding: 20px 25px;
+            }
+
+            .intro-title {
+                font-size: 2.5rem;
+            }
+
+            .game-title {
+                font-size: 2rem;
+            }
+
+            .challenge-text {
+                font-size: 1.5rem;
+            }
+
+            .highlight {
+                font-size: 2rem;
+            }
+
+            .answer-input {
+                font-size: 2rem;
+                min-width: 120px;
+            }
+
+            .level-selection {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- خلفية النجوم -->
+    <div class="stars" id="stars"></div>
+
+    <!-- مؤشر التحميل -->
+    <div class="loading-indicator" id="loadingIndicator">
+        <div class="spinner"></div>
+        <div class="loading-text">جاري تحميل الأسئلة...</div>
+    </div>
+
+    <!-- الشاشة الافتتاحية -->
+    <div class="intro-screen" id="introScreen">
+        <div class="time-machine-logo">
+            <div class="clock-circle">
+                <div class="clock-hand hour-hand"></div>
+                <div class="clock-hand minute-hand"></div>
+            </div>
+        </div>
+        <h1 class="intro-title">مهمة إنقاذ الزمن</h1>
+        <p class="intro-subtitle">ساعد في إصلاح آلة الزمن عبر حل تحديات تحويل الوقت!</p>
+        <button class="start-button" onclick="startGame()">
+            <span>🚀 ابدأ المغامرة</span>
+        </button>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container hidden" id="mainContent">
+        <!-- معلومات الديوان -->
+        <div class="institution-header">
+            <div class="institution-info">
+                <img src="1.png" alt="Logo" class="logo">
+                <div class="text-container">
+                    <div class="institution-name">الديوان الوطني للتعليم والتكوين عن بُعد</div>
+                    <div class="institution-level">المرحلة الانتقالية إلى السنة الأولى متوسط</div>
+                </div>
+                <img src="1.png" alt="Logo" class="logo">
+            </div>
+        </div>
+        
+        <!-- الرأس -->
+        <div class="header">
+            <h1 class="game-title">⏰ مهمة إنقاذ الزمن</h1>
+            <p class="game-subtitle">آلة الزمن معطلة! ساعد في إصلاحها بحل التحديات</p>
+        </div>
+
+        <!-- شريط التقدم -->
+        <div class="progress-section">
+            <div class="machine-status">
+                <div class="machine-icon">⚙️</div>
+                <div class="progress-info" style="flex: 1;">
+                    <h2>حالة الآلة</h2>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0% - الآلة معطلة!</div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="scoreValue">0</div>
+                    <div class="stat-label">النقاط</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="levelValue">-</div>
+                    <div class="stat-label">المستوى</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="challengeValue">0/5</div>
+                    <div class="stat-label">التحديات</div>
+                </div>
+            </div>
+            <div class="badges" id="badgesContainer"></div>
+        </div>
+
+        <!-- اختيار المستوى -->
+        <div class="level-selection" id="levelSelection">
+            <div class="level-card easy" onclick="selectLevel('easy')">
+                <div class="level-icon">🟢</div>
+                <h3 class="level-title">مستوى سهل</h3>
+                <p class="level-description">تحويل مباشر بين وحدتين<br>مثال: من ساعات إلى دقائق</p>
+            </div>
+            <div class="level-card medium" onclick="selectLevel('medium')">
+                <div class="level-icon">🟡</div>
+                <h3 class="level-title">مستوى متوسط</h3>
+                <p class="level-description">تحويل على مرحلتين<br>مثال: من أيام إلى دقائق</p>
+            </div>
+            <div class="level-card hard" onclick="selectLevel('hard')">
+                <div class="level-icon">🔴</div>
+                <h3 class="level-title">مستوى صعب</h3>
+                <p class="level-description">وضعيات حياتية متنوعة<br>حل مشكلات واقعية</p>
+            </div>
+        </div>
+
+        <!-- منطقة اللعب -->
+        <div class="game-area hidden" id="gameArea">
+            <div class="challenge-header">
+                <div class="challenge-number" id="challengeNumber">التحدي 1 من 5</div>
+                <div class="challenge-text" id="challengeText"></div>
+            </div>
+
+            <div class="answer-section">
+                <div class="input-group">
+                    <input type="number" class="answer-input" id="answerInput" placeholder="؟">
+                    <span class="unit-label" id="targetUnit"></span>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="checkButton" onclick="checkAnswer()">
+                        <span>✓ تحقق من الإجابة</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="getHint()">
+                        <span>💡 تلميح</span>
+                    </button>
+                    <button class="btn btn-skip" onclick="skipChallenge()">
+                        <span>⏭️ تخطي</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <!-- شاشة النهاية -->
+        <div class="completion-screen hidden" id="completionScreen">
+            <div class="celebration-icon">👏</div>
+            <h2 class="completion-title">ممتاز! لقد أصلحت آلة الزمن!</h2>
+            <p class="completion-message">
+                لقد أتممت جميع التحديات بنجاح!<br>
+                آلة الزمن تعمل الآن بكفاءة 100%
+            </p>
+            <div class="final-stats">
+                <div class="final-stat">
+                    <div class="final-stat-value" id="finalScore">0</div>
+                    <div class="final-stat-label">النقاط النهائية</div>
+                </div>
+                <div class="final-stat">
+                    <div class="final-stat-value" id="correctAnswers">0</div>
+                    <div class="final-stat-label">إجابات صحيحة</div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="resetGame()">
+                    <span>🔄 ابدأ من جديد</span>
+                </button>
+                <button class="btn btn-secondary" onclick="chooseDifferentLevel()">
+                    <span>🎯 اختر مستوى آخر</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // المتغيرات العامة
+        let currentLevel = null;
+        let currentChallenge = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let currentQuestion = null;
+        let hintUsed = false;
+        let challenges = null;
+
+        // تحميل الأسئلة من ملف JSON
+        async function loadQuestions() {
+            // عرض مؤشر التحميل
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+                loadingIndicator.classList.add('show');
+            }
+
+            try {
+                const response = await fetch('questions.json');
+                
+                if (!response.ok) {
+                    throw new Error('فشل تحميل ملف الأسئلة');
+                }
+                
+                challenges = await response.json();
+                console.log('✓ تم تحميل الأسئلة بنجاح من ملف questions.json');
+                
+            } catch (error) {
+                console.warn('⚠️ تعذر تحميل ملف الأسئلة الخارجي، استخدام الأسئلة الافتراضية');
+                console.error('تفاصيل الخطأ:', error);
+                
+                // في حالة الفشل، استخدام أسئلة افتراضية
+                challenges = {
+                    easy: [
+                        { value: 3, from: 'ساعة', to: 'دقيقة', answer: 180, hint: 'كل ساعة = 60 دقيقة' },
+                        { value: 120, from: 'دقيقة', to: 'ساعة', answer: 2, hint: 'اقسم على 60' },
+                        { value: 5, from: 'دقيقة', to: 'ثانية', answer: 300, hint: 'كل دقيقة = 60 ثانية' },
+                        { value: 240, from: 'ثانية', to: 'دقيقة', answer: 4, hint: 'اقسم على 60' },
+                        { value: 2, from: 'يوم', to: 'ساعة', answer: 48, hint: 'كل يوم = 24 ساعة' }
+                    ],
+                    medium: [
+                        { value: 2, from: 'يوم', to: 'دقيقة', answer: 2880, hint: 'حول إلى ساعات أولاً ثم إلى دقائق' },
+                        { value: 7200, from: 'ثانية', to: 'ساعة', answer: 2, hint: 'حول إلى دقائق أولاً ثم إلى ساعات' },
+                        { value: 3, from: 'ساعة', to: 'ثانية', answer: 10800, hint: 'حول إلى دقائق ثم إلى ثوان' },
+                        { value: 1, from: 'يوم', to: 'ثانية', answer: 86400, hint: 'يوم = 24 ساعة، كل ساعة = 3600 ثانية' },
+                        { value: 600, from: 'دقيقة', to: 'يوم', answer: 0.416, hint: 'حول إلى ساعات ثم إلى أيام (0.416 يوم = 10 ساعات)', tolerance: 0.05 }
+                    ],
+                    hard: [
+                        { story: 'فيلم مدته ساعتان و30 دقيقة. كم دقيقة هذا؟', answer: 150, hint: 'ساعتان = 120 دقيقة، أضف 30' },
+                        { story: 'رحلة استغرقت 3 أيام و 6 ساعات. كم ساعة هذا؟', answer: 78, hint: '3 أيام = 72 ساعة، أضف 6' },
+                        { story: 'مباراة كرة قدم: شوطان كل واحد 45 دقيقة + استراحة 15 دقيقة. كم الوقت الكلي بالثواني؟', answer: 6300, hint: 'المجموع = 105 دقيقة × 60' },
+                        { story: 'تستيقظ الساعة 7 صباحاً وتنام الساعة 10 مساءً. كم ساعة تكون مستيقظاً؟', answer: 15, hint: 'من 7 صباحاً إلى 10 مساءً = 15 ساعة' },
+                        { story: 'برنامج تلفزيوني يُعرض يومياً لمدة 30 دقيقة. كم ساعة تشاهد في أسبوع كامل؟', answer: 3.5, hint: '7 أيام × 30 دقيقة = 210 دقيقة = 3.5 ساعة', tolerance: 0.1 }
+                    ]
+                };
+            } finally {
+                // إخفاء مؤشر التحميل
+                if (loadingIndicator) {
+                    loadingIndicator.classList.remove('show');
+                }
+            }
+        }
+
+        // بدء اللعبة
+        async function startGame() {
+            document.getElementById('introScreen').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            createStars();
+            
+            // تحميل الأسئلة إذا لم يتم تحميلها بعد
+            if (!challenges) {
+                await loadQuestions();
+            }
+        }
+
+        // إنشاء النجوم في الخلفية
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // اختيار المستوى
+        function selectLevel(level) {
+            // التأكد من تحميل الأسئلة
+            if (!challenges) {
+                alert('جاري تحميل الأسئلة، يرجى الانتظار...');
+                return;
+            }
+
+            currentLevel = level;
+            currentChallenge = 0;
+            score = 0;
+            correctAnswers = 0;
+            
+            document.getElementById('levelSelection').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            
+            const levelNames = {
+                easy: 'سهل 🟢',
+                medium: 'متوسط 🟡',
+                hard: 'صعب 🔴'
+            };
+            
+            document.getElementById('levelValue').textContent = levelNames[level];
+            
+            loadChallenge();
+        }
+
+        // تحميل التحدي
+        function loadChallenge() {
+            if (currentChallenge >= 5) {
+                completeGame();
+                return;
+            }
+
+            const challenge = challenges[currentLevel][currentChallenge];
+            currentQuestion = challenge;
+            hintUsed = false;
+
+            // إعادة تفعيل زر التحقق
+            const checkButton = document.getElementById('checkButton');
+            if (checkButton) {
+                checkButton.disabled = false;
+            }
+
+            document.getElementById('challengeNumber').textContent = `التحدي ${currentChallenge + 1} من 5`;
+            document.getElementById('challengeValue').textContent = `${currentChallenge}/5`;
+
+            let questionText = '';
+            if (challenge.story) {
+                questionText = challenge.story;
+                document.getElementById('targetUnit').textContent = challenge.answer % 1 === 0 ? '' : '';
+            } else {
+                questionText = `حوّل <span class="highlight">${challenge.value}</span> ${challenge.from} إلى:`;
+                document.getElementById('targetUnit').textContent = challenge.to;
+            }
+
+            document.getElementById('challengeText').innerHTML = questionText;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('feedback').classList.remove('show', 'success', 'error');
+            document.getElementById('answerInput').focus();
+        }
+
+        // التحقق من الإجابة
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById('answerInput').value);
+            
+            if (isNaN(userAnswer)) {
+                showFeedback(false, 'يرجى إدخال رقم!');
+                return;
+            }
+
+            const tolerance = currentQuestion.tolerance || 0.01;
+            const isCorrect = Math.abs(userAnswer - currentQuestion.answer) <= tolerance;
+
+            if (isCorrect) {
+                const points = hintUsed ? 15 : 20;
+                score += points;
+                correctAnswers++;
+                updateScore();
+                showFeedback(true, `ممتاز! إجابة صحيحة! 🎉 (+${points} نقطة)`);
+                createParticles('✨');
+                
+                setTimeout(() => {
+                    currentChallenge++;
+                    updateProgress();
+                    loadChallenge();
+                }, 2000);
+            } else {
+                score = Math.max(0, score - 5);
+                updateScore();
+                showFeedback(false, 'للأسف، الإجابة خاطئة! حاول مرة أخرى 💪', currentQuestion.hint);
+            }
+        }
+
+        // عرض التغذية الراجعة
+        function showFeedback(success, message, hint = null) {
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'feedback show ' + (success ? 'success' : 'error');
+            
+            let feedbackHTML = `
+                <div class="feedback-icon">${success ? '✓' : '✗'}</div>
+                <div>${message}</div>
+            `;
+            
+            if (hint && !success) {
+                feedbackHTML += `<div class="hint">💡 ${hint}</div>`;
+            }
+            
+            feedback.innerHTML = feedbackHTML;
+        }
+
+        // الحصول على تلميح
+        function getHint() {
+            if (hintUsed) {
+                showFeedback(false, 'لقد استخدمت التلميح بالفعل!');
+                return;
+            }
+            
+            hintUsed = true;
+            showFeedback(false, currentQuestion.hint, null);
+        }
+
+        // تخطي التحدي
+        function skipChallenge() {
+            currentChallenge++;
+            updateProgress();
+            loadChallenge();
+        }
+
+        // تحديث النقاط
+        function updateScore() {
+            document.getElementById('scoreValue').textContent = score;
+        }
+
+        // تحديث شريط التقدم
+        function updateProgress() {
+            const progress = (currentChallenge / 5) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            let statusText = '';
+            if (progress === 0) statusText = '0% - الآلة معطلة!';
+            else if (progress < 40) statusText = progress + '% - بداية جيدة';
+            else if (progress < 80) statusText = progress + '% - تقدم ممتاز';
+            else if (progress < 100) statusText = progress + '% - أوشكت على الانتهاء';
+            else statusText = '100% - الآلة تعمل!';
+            
+            document.getElementById('progressText').textContent = statusText;
+
+            // إضافة شارات
+            if (progress === 20 && !document.querySelector('.badge[data-badge="first"]')) {
+                addBadge('🌟', 'البداية الموفقة', 'first');
+            }
+            if (progress === 60 && !document.querySelector('.badge[data-badge="half"]')) {
+                addBadge('⭐', 'في منتصف الطريق', 'half');
+            }
+            if (progress === 100 && !document.querySelector('.badge[data-badge="complete"]')) {
+                addBadge('🏆', 'البطل', 'complete');
+            }
+        }
+
+        // إضافة شارة
+        function addBadge(icon, text, id) {
+            const badge = document.createElement('div');
+            badge.className = 'badge';
+            badge.setAttribute('data-badge', id);
+            badge.innerHTML = `<span class="badge-icon">${icon}</span><span>${text}</span>`;
+            document.getElementById('badgesContainer').appendChild(badge);
+        }
+
+        // إنشاء جزيئات متحركة
+        function createParticles(emoji) {
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emoji;
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = window.innerHeight / 2 + 'px';
+                particle.style.fontSize = Math.random() * 30 + 20 + 'px';
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        // إكمال اللعبة
+        function completeGame() {
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('completionScreen').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            updateProgress();
+            createParticles('🎊');
+        }
+
+        // إعادة تعيين اللعبة
+        function resetGame() {
+            currentLevel = null;
+            currentChallenge = 0;
+            score = 0;
+            correctAnswers = 0;
+            
+            document.getElementById('completionScreen').classList.add('hidden');
+            document.getElementById('levelSelection').classList.remove('hidden');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0% - الآلة معطلة!';
+            document.getElementById('scoreValue').textContent = '0';
+            document.getElementById('levelValue').textContent = '-';
+            document.getElementById('challengeValue').textContent = '0/5';
+            document.getElementById('badgesContainer').innerHTML = '';
+        }
+
+        // اختيار مستوى مختلف
+        function chooseDifferentLevel() {
+            currentChallenge = 0;
+            score = 0;
+            correctAnswers = 0;
+            
+            document.getElementById('completionScreen').classList.add('hidden');
+            document.getElementById('levelSelection').classList.remove('hidden');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0% - الآلة معطلة!';
+            document.getElementById('scoreValue').textContent = '0';
+            document.getElementById('challengeValue').textContent = '0/5';
+        }
+
+        // التعامل مع مفتاح Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحميل الأسئلة عند تحميل الصفحة
+            loadQuestions();
+            
+            document.getElementById('answerInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
