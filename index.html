@@ -834,6 +834,10 @@
 
         /* استجابة للشاشات الصغيرة */
         @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
             .institution-name {
                 font-size: 1.4rem;
             }
@@ -844,6 +848,7 @@
 
             .institution-header {
                 padding: 20px 25px;
+                margin-bottom: 20px;
             }
 
             .logo {
@@ -855,12 +860,49 @@
                 gap: 15px;
             }
 
+            .header {
+                padding: 20px 0;
+            }
+
             .intro-title {
                 font-size: 2.5rem;
             }
 
             .game-title {
                 font-size: 2rem;
+            }
+
+            .progress-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .machine-status {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats {
+                gap: 15px;
+            }
+
+            .stat-item {
+                padding: 12px 20px;
+                min-width: 100px;
+            }
+
+            .level-selection {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .level-card {
+                padding: 25px;
+            }
+
+            .game-area {
+                padding: 30px;
+                margin: 20px 0;
             }
 
             .challenge-text {
@@ -874,20 +916,42 @@
             .answer-input {
                 font-size: 2rem;
                 min-width: 120px;
+                padding: 15px 20px;
             }
 
-            .level-selection {
-                grid-template-columns: 1fr;
+            .button-group {
+                gap: 15px;
             }
 
             .btn {
                 padding: 15px 35px;
                 font-size: 1.1rem;
             }
+
+            .completion-screen {
+                padding: 30px 15px;
+            }
+
+            .completion-title {
+                font-size: 2.5rem;
+            }
+
+            .final-stats {
+                gap: 20px;
+            }
+
+            .final-stat {
+                padding: 20px;
+                min-width: 150px;
+            }
         }
 
         /* استجابة للشاشات المتوسطة */
         @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
             .logo {
                 width: 35px;
                 height: 35px;
@@ -903,6 +967,103 @@
 
             .institution-level {
                 font-size: 0.9rem;
+            }
+
+            .institution-header {
+                padding: 15px 20px;
+            }
+
+            .header {
+                padding: 15px 0;
+            }
+
+            .intro-title {
+                font-size: 2rem;
+            }
+
+            .game-title {
+                font-size: 1.8rem;
+            }
+
+            .progress-section {
+                padding: 15px;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-item {
+                padding: 10px 15px;
+                min-width: 80px;
+            }
+
+            .level-card {
+                padding: 20px;
+            }
+
+            .game-area {
+                padding: 20px;
+            }
+
+            .challenge-text {
+                font-size: 1.3rem;
+            }
+
+            .highlight {
+                font-size: 1.8rem;
+            }
+
+            .answer-input {
+                font-size: 1.8rem;
+                min-width: 100px;
+                padding: 12px 15px;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+
+            .completion-screen {
+                padding: 20px 10px;
+            }
+
+            .completion-title {
+                font-size: 2rem;
+            }
+
+            .completion-message {
+                font-size: 1.2rem;
+            }
+
+            .final-stat {
+                padding: 15px;
+                min-width: 120px;
+            }
+
+            .final-stat-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* استجابة للشاشات الكبيرة جداً */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .institution-name {
+                font-size: 2.5rem;
+            }
+
+            .institution-level {
+                font-size: 1.5rem;
             }
         }
     </style>
